@@ -297,4 +297,33 @@
     </footer>
 
 </body>
-</html>
+</html>from PIL import Image
+
+# Cargar la imagen original de la cuadrícula
+image_path = "ChatGPT Image 16 jun 2026, 12_22_14 p.m..png"
+img = Image.open(image_path)
+width, height = img.size
+
+# Definir las coordenadas exactas de corte (ajustadas para omitir líneas divisorias)
+# Fila 1 (Mitad superior) -> Imágenes 1 y 2
+# Fila 2 (Mitad inferior) -> Imágenes 3, 4 y 5 (divididas en 3 partes iguales de ancho)
+
+mid_x = int(width * 0.5)
+mid_y = int(height * 0.5)
+one_third_x = int(width * 0.3333)
+two_thirds_x = int(width * 0.6666)
+
+# Coordenadas de los cuadros: (izquierda, arriba, derecha, abajo)
+boxes = {
+    "imagen1": (0, 0, mid_x - 2, mid_y - 2),
+    "imagen2": (mid_x + 2, 0, width, mid_y - 2),
+    "imagen3": (0, mid_y + 2, one_third_x - 2, height),
+    "imagen4": (one_third_x + 2, mid_y + 2, two_thirds_x - 2, height),
+    "imagen5": (two_thirds_x + 2, mid_y + 2, width, height)
+}
+
+# Ejecutar el recorte y guardar cada archivo individualmente
+for name, box in boxes.items():
+    cropped_img = img.crop(box)
+    cropped_img.save(f"{name}.jpg", "JPEG", quality=95)
+    print(f"¡{name}.jpg generada y optimizada con éxito!")
